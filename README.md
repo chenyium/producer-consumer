@@ -1,2 +1,2 @@
 # producer-consumer
-Linux 生产者-消费者模型的  C++ 实现
+生产者-消费者模型的 Linux C++ 实现
