@@ -28,9 +28,10 @@ class CPCModel {
     std::cout << "produce product: " <<  m_product.m_products.back() << std::endl;
     m_cv.notify_one();
   }
+
   void consume() {
     std::unique_lock<std::mutex> lock(m_product.m_mutex);
-    while (m_product.empty()) m_cv.wait(lock);
+    m_cv.wait(lock, [this] { return !m_product.empty(); });
     std::cout << "consume product: " << m_product.m_products.front()
               << std::endl;
     m_product.m_products.pop();
@@ -43,6 +44,7 @@ class CPCModel {
 
 static void worker_producer(CPCModel& model) { model.produce(); }
 static void worker_consumer(CPCModel& model) { model.consume(); }
+
 int main(int argc, char* argv[]) {
   CPCModel model;
   std::thread producer(worker_producer, std::ref(model));
